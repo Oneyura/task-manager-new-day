@@ -15,6 +15,10 @@ class Position(models.Model):
     name = models.CharField(max_length=50)
 
 
+class Worker(AbstractUser):
+    position = models.ForeignKey(Position, on_delete=models.CASCADE)
+
+
 class Task(models.Model):
     class Priority(models.TextChoices):
         LOW = "Low"
@@ -37,9 +41,3 @@ class Task(models.Model):
         ordering = ["status", "-date"]
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
-
-
-class Worker(AbstractUser):
-    position = models.ForeignKey(Position, on_delete=models.CASCADE)
-
-
