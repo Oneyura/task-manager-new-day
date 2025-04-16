@@ -1,6 +1,4 @@
-from django.urls import path, include
-
-from task_manager.models import TaskType
+from django.urls import path
 
 from task_manager.views import (
 index,
@@ -23,10 +21,10 @@ TagCreateView,
 TagUpdateView,
 TagDeleteView,
 TaskTypeCreateView,
-TaskTypeCreateView,
-TaskTypeCreateView,
+TaskTypeUpdateView,
+TaskTypeDeleteView,
 PositionCreateView,
-PsitionUpdateView,
+PositionUpdateView,
 PositionDeleteView,
 )
 
@@ -121,14 +119,14 @@ urlpatterns = [
     ),
     path(
         "settings/task-type/<int:pk>/update/",
-        TaskTypeCreateView.as_view(),
+        TaskTypeUpdateView.as_view(),
         name="task-type-update"
     ),
     path(
         "settings/task-type/<int:pk>/delete/",
-        TaskTypeCreateView.as_view(),
+        TaskTypeDeleteView.as_view(),
         name="task-type-delete"
-    )
+    ),
     path(
         "settings/position/create/",
         PositionCreateView.as_view(),
@@ -136,7 +134,7 @@ urlpatterns = [
     ),
     path(
         "settings/position/<int:pk>/update/",
-        PsitionUpdateView.as_view(),
+        PositionUpdateView.as_view(),
         name="position-update"
     ),
     path(
