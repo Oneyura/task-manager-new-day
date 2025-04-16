@@ -23,14 +23,14 @@ def index(request):
     count_active_tasks = tasks.filter(
         deadline__gt=now, status=False
     ).count()
-    count_completed_tasks_by_7days = {
+    count_completed_tasks_for_7days = {
         (now - timedelta(days=day)).date(): tasks.filter(
             end_date__date=(now - timedelta(days=day)).date(),
             status=True
         ).count()
         for day in range(7)
     }
-    count_terminated_tasks_by_7days = {
+    count_terminated_tasks_for_7days = {
         (now - timedelta(days=day)).date(): tasks.filter(
             deadline__date=(now - timedelta(days=day)).date(),
             status=False
@@ -43,8 +43,8 @@ def index(request):
         "count_completed_tasks": count_completed_tasks,
         "count_terminated_tasks": count_terminated_tasks,
         "count_active_tasks": count_active_tasks,
-        "count_completed_tasks_by_7days": count_completed_tasks_by_7days,
-        "count_terminated_tasks_by_7days": count_terminated_tasks_by_7days,
+        "count_completed_tasks_for_7days": count_completed_tasks_for_7days,
+        "count_terminated_tasks_for_7days": count_terminated_tasks_for_7days,
     }
     return render(
         request,
