@@ -56,7 +56,6 @@ def index(request):
 class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
     context_object_name = "task_list"
-    paginate_by = 10
     template_name = "task_manager/task_list.html"
 
     # search implement and fiter
@@ -172,7 +171,6 @@ class TaskUndoView(LoginRequiredMixin, View):
 class WorkerListView(LoginRequiredMixin, generic.ListView):
     model = Worker
     context_object_name = "worker_list"
-    paginate_by = 10
     template_name = "task_manager/worker_list.html"
 
     def get_context_data(self, **kwargs):
