@@ -2,6 +2,34 @@ from django.urls import path, include
 
 from task_manager.models import TaskType
 
+from task_manager.views import (
+index,
+TaskListView,
+TaskDetailView,
+TaskCreateView,
+TaskUpdateView,
+TaskDeleteView,
+TaskAssignView,
+TaskUnassignView,
+TaskCompleteView,
+TaskUndoView,
+WorkerListView,
+WorkerDetailView,
+WorkerCreateView,
+WorkerUpdateView,
+WorkerDeleteView,
+settings,
+TagCreateView,
+TagUpdateView,
+TagDeleteView,
+TaskTypeCreateView,
+TaskTypeCreateView,
+TaskTypeCreateView,
+PositionCreateView,
+PsitionUpdateView,
+PositionDeleteView,
+)
+
 urlpatterns = [
     path("", index, name="index"),
     path("tasks/", TaskListView.as_view(), name="task-list"),
