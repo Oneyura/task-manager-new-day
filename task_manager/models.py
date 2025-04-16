@@ -35,9 +35,10 @@ class Task(models.Model):
     tags = models.ManyToManyField(Tag, related_name="tasks")
     assignees = models.ManyToManyField(get_user_model(), related_name="assigned_tasks")
     priority = models.CharField(choices=Priority, default=Priority.NORMAL, max_length=10)
+    end_date = models.DateTimeField(blank=True, null=True)
 
 
     class Meta:
-        ordering = ["status", "-date"]
+        ordering = ["status", "-date"]# add priority
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
