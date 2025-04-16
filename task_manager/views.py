@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import generic, View
 
-from task_manager.forms import TaskForm, WorkerForm, TaskSearchForm
+from task_manager.forms import TaskForm, WorkerForm, WorkerFilterForm, TaskFilterForm
 from task_manager.models import Task, Worker, Tag, TaskType, Position
 
 
@@ -60,20 +60,61 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
     template_name = "task_manager/task_list.html"
 
     # search implement and fiter
-    # def get_context_data(self, **kwargs):
-    #     context = super(TaskListView, self).get_context_data(**kwargs)
-    #     name = self.request.GET.get("name", "")
-    #     context["search_form"] = TaskSearchForm(initial={"name": name})
-    #     return context
-    #
-    # def get_queryset(self, **kwargs):
-    #     form = TaskSearchForm(self.request.GET)
-    #     self.queryset = Task.objects.all()
-    #     if form.is_valid():
-    #         return self.queryset.filter(
-    #             name__icontains=form.cleaned_data["name"]
-    #         )
-    #     return self.queryset
+    def get_context_data(self, **kwargs):
+        context = super(TaskListView, self).get_context_data(**kwargs)
+        name = self.request.GET.get("name", "")
+        tag = self.request.GET.get("tag", "")
+        task_type = self.request.GET.get("task_type", "")
+        status = self.request.GET.get("status", "")
+        priority = self.request.GET.get("priority", "")
+        only_my = self.request.GET.get("only_my", "")
+        context["filter_form"] = TaskFilterForm(
+            initial={
+                "name": name,
+                "tag": tag,
+                "task_type": task_type,
+                "status": status,
+                "priority": priority,
+                "only_my": only_my,
+            }
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        form = TaskFilterForm(self.request.GET)
+
+        if form.is_valid():
+            name = form.cleaned_data["name"]
+            tag = form.cleaned_data["tag"]
+            task_type = form.cleaned_data["task_type"]
+            status = form.cleaned_data["status"]
+            priority = form.cleaned_data["priority"]
+            only_my = form.cleaned_data["only_my"]
+
+            if name:
+                queryset = queryset.filter(name__icontains=name)
+
+            if tag:
+                queryset = queryset.filter(tags__in=tag).distinct()
+
+            if task_type:
+                queryset = queryset.filter(task_type__in=task_type).distinct()
+
+            if status == "true":
+                queryset = queryset.filter(status=True)
+            elif status == "false":
+                queryset = queryset.filter(status=False)
+
+            if priority:
+                queryset = queryset.filter(priority=priority)
+
+            if only_my:
+                queryset = queryset.filter(
+                    assignees=self.request.user
+                ).distinct()
+
+        return queryset
 
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
@@ -133,7 +174,31 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
     context_object_name = "worker_list"
     paginate_by = 10
     template_name = "task_manager/worker_list.html"
-    # search implement and fiter
+
+    def get_context_data(self, **kwargs):
+        context = super(WorkerListView, self).get_context_data(**kwargs)
+        username = self.request.GET.get("username", "")
+        position = self.request.GET.get("position", "")
+        context["filter_form"] = WorkerFilterForm(
+            initial={"username": username, "position": position}
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        form = WorkerFilterForm(self.request.GET)
+
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            position = form.cleaned_data["position"]
+
+            if username:
+                queryset = queryset.filter(username__icontains=username)
+
+            if position:
+                queryset = queryset.filter(position__in=position).distinct()
+
+        return queryset
 
 
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
