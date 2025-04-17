@@ -6,13 +6,22 @@ from django.contrib.auth.models import AbstractUser
 class Tag(models.Model):
     name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
 
 class TaskType(models.Model):
     name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
 
 class Position(models.Model):
     name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class Worker(AbstractUser):
@@ -49,3 +58,6 @@ class Task(models.Model):
         ordering = ["status", "-date"]# add priority
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
+
+    def __str__(self):
+        return self.name
