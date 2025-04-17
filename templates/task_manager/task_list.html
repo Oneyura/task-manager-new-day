@@ -65,7 +65,7 @@
           <div class="card shadow-sm h-100">
             <div class="card-body">
               <h5 class="card-title d-flex justify-content-between align-items-center">
-                {{ task.name }}
+                <a href="{% url 'task-manager:task-detail' pk=task.id %}">{{ task.name }}</a>
                 {% if task.status %}
                   <span class="badge bg-success">Done</span>
                 {% else %}
