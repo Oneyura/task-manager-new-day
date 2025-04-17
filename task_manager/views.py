@@ -125,7 +125,7 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
 
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     model = Task
-    from_class = TaskForm
+    form_class = TaskForm
     success_url = reverse_lazy("task-manager:task-list")
 
 
@@ -143,7 +143,7 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
 class TaskAssignView(LoginRequiredMixin, View):
     def get(self, request, pk, *args, **kwargs):
         task = get_object_or_404(Task, pk=pk)
-        task.assignees = task.assignees.all() + request.user
+        task.assignees.add(request.user)
         task.save()
         return redirect("task-manager:task-list") # add back to last page
 

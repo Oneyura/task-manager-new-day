@@ -45,13 +45,13 @@ class TaskFilterForm(forms.Form):
         queryset=Tag.objects.all(),
         required=False,
         label="Tag",
-        widget=forms.CheckboxSelectMultiple,
+        # widget=forms.CheckboxSelectMultiple,
     )
     task_type = forms.ModelMultipleChoiceField(
         queryset=TaskType.objects.all(),
         required=False,
         label="Task Type",
-        widget=forms.CheckboxSelectMultiple,
+        # widget=forms.CheckboxSelectMultiple,
     )
     status = forms.ChoiceField(
         choices=STATUS_CHOICES,
