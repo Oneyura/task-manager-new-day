@@ -16,7 +16,13 @@ class Position(models.Model):
 
 
 class Worker(AbstractUser):
-    position = models.ForeignKey(Position, on_delete=models.CASCADE)
+    position = models.ForeignKey(
+        Position,
+        on_delete=models.CASCADE,
+        related_name='worker',
+        null=True,
+        blank=True,
+    )
 
 
 class Task(models.Model):
@@ -25,6 +31,7 @@ class Task(models.Model):
         NORMAL = "Normal"
         HIGH = "High"
         URGENT = "Urgent"
+
 
     name = models.CharField(max_length=150)
     description = models.TextField()
