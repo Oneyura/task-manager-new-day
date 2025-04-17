@@ -45,6 +45,9 @@ def index(request):
         "count_active_tasks": count_active_tasks,
         "count_completed_tasks_for_7days": count_completed_tasks_for_7days,
         "count_terminated_tasks_for_7days": count_terminated_tasks_for_7days,
+        "labels_7days": list(reversed([date.strftime("%Y-%m-%d") for date in count_completed_tasks_for_7days.keys()])),
+        "completed_data": list(reversed(list(count_completed_tasks_for_7days.values()))),
+        "terminated_data": list(reversed(list(count_terminated_tasks_for_7days.values()))),
     }
     return render(
         request,
