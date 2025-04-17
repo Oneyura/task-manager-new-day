@@ -239,11 +239,13 @@ def settings(request):
 
 class TagCreateView(LoginRequiredMixin, generic.CreateView):
     model = Tag
+    fields = "__all__"
     success_url = reverse_lazy("task-manager:settings")
 
 
 class TagUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Tag
+    fields = "__all__"
     success_url = reverse_lazy("task-manager:settings")
 
 
@@ -254,11 +256,13 @@ class TagDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
     model = TaskType
+    fields = "__all__"
     success_url = reverse_lazy("task-manager:settings")
 
 
 class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = TaskType
+    fields = "__all__"
     success_url = reverse_lazy("task-manager:settings")
 
 
@@ -269,11 +273,13 @@ class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 class PositionCreateView(LoginRequiredMixin, generic.CreateView):
     model = Position
+    fields = "__all__"
     success_url = reverse_lazy("task-manager:settings")
 
 
 class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Position
+    fields = "__all__"
     success_url = reverse_lazy("task-manager:settings")
 
 
