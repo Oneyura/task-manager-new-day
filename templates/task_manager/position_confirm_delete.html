@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card border-danger">
+    <div class="card-header bg-danger text-white">
+      <h4 class="mb-0">⚠️ Confirm Deletion</h4>
+    </div>
+    <div class="card-body">
+      <p class="lead">Are you sure you want to delete the worker position: <strong>{{ position.name }}</strong>?</p>
+
+      <form method="post" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+      </form>
+      <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-secondary ms-2">Cancel</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
