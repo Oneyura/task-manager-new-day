@@ -1,19 +1,107 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-  <h1>New day - Report</h1>
-  <p>count of tasks: {{ count_tasks }}</p>
-  <p>count of workers: {{ count_workers }}</p>
-  <p>count of completed tasks: {{ count_completed_tasks }}</p>
-  <p>count of terminated_tasks: {{ count_terminated_tasks }}</p>
-  <p>count of active tasks: {{ count_active_tasks }}</p>
-  <br>
-  <p>count of succeed completed task for 7 days</p>
-  {% for date, tasks in count_completed_tasks_for_7days.items %}
-  <p>{{ date }}: {{ tasks }}</p>
-  {% endfor %}
-  <br>
-  <p>count of terminated task for 7 days</p>
-  {% for date, tasks in count_terminated_tasks_for_7days.items %}
-  <p>{{ date }}: {{ tasks }}</p>
-  {% endfor %}
+<div class="container mt-5">
+  <h1 class="mb-4 text-center">📊 New Day — Dashboard</h1>
+
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-bg-primary mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Total Tasks</h5>
+          <p class="card-text fs-4">{{ count_tasks }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-success mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Completed Tasks</h5>
+          <p class="card-text fs-4">{{ count_completed_tasks }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-warning mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Active Tasks</h5>
+          <p class="card-text fs-4">{{ count_active_tasks }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card text-bg-danger mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Terminated Tasks</h5>
+          <p class="card-text fs-4">{{ count_terminated_tasks }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card text-bg-secondary mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Workers</h5>
+          <p class="card-text fs-4">{{ count_workers }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <h4 class="mt-5">📈 Tasks Overview (Last 7 Days)</h4>
+<canvas id="tasksChart" height="100"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const labels = {{ labels_7days|safe }};
+  const completedData = {{ completed_data|safe }};
+  const terminatedData = {{ terminated_data|safe }};
+
+  const ctx = document.getElementById('tasksChart').getContext('2d');
+  const tasksChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Completed Tasks',
+          data: completedData,
+          borderColor: 'green',
+          backgroundColor: 'rgba(0, 128, 0, 0.2)',
+          fill: true,
+          tension: 0.3
+        },
+        {
+          label: 'Terminated Tasks',
+          data: terminatedData,
+          borderColor: 'red',
+          backgroundColor: 'rgba(255, 0, 0, 0.2)',
+          fill: true,
+          tension: 0.3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
+</script>
+
+
 {% endblock %}
+
