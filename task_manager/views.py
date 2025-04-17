@@ -214,6 +214,7 @@ class WorkerCreateView(generic.CreateView):
 
 class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Worker
+    form_class = WorkerForm
     success_url = reverse_lazy("task-manager:worker-list")
 
 
