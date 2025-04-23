@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-sm border">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">👤 {{ worker.username }}'s Profile</h4>
+
+      {% if request.user == worker %}
+        <div class="d-flex gap-2">
+          <a href="{% url 'accounts:worker-update' pk=worker.id %}" class="btn btn-sm btn-light">Update</a>
+          <a href="{% url 'accounts:worker-delete' pk=worker.id %}" class="btn btn-sm btn-danger">Delete</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="card-body">
+      <p><strong>Full Name:</strong> {{ worker.first_name }} {{ worker.last_name }}</p>
+      <p><strong>Email:</strong> <a href="mailto:{{ worker.email }}">{{ worker.email }}</a></p>
+      <p><strong>Position:</strong> {{ worker.position }}</p>
+      <p><strong>Date Joined:</strong> {{ worker.date_joined|date:"Y-m-d H:i" }}</p>
+      <p><strong>Last Login:</strong> {{ worker.last_login|date:"Y-m-d H:i" }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

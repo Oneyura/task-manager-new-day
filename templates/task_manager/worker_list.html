@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>👥 Worker List</h2>
+  </div>
+
+  <form method="get" class="mb-4">
+    <div class="d-flex flex-wrap gap-2 align-items-end">
+      {{ filter_form.username }}
+      <button type="submit" class="btn btn-outline-primary">Search</button>
+      <button class="btn btn-outline-secondary"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#filtersCollapse"
+              aria-expanded="false"
+              aria-controls="filtersCollapse">
+        Filters
+      </button>
+    </div>
+
+    <div class="collapse mt-3" id="filtersCollapse">
+      <div class="card card-body border">
+        <div class="row">
+          <div class="col-md-12">
+            <label class="form-label fw-bold">Position</label>
+            {{ filter_form.position }}
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Apply Filters</button>
+      </div>
+    </div>
+  </form>
+
+  {% if worker_list %}
+    <div class="table-responsive">
+      <table class="table table-hover table-striped border rounded shadow-sm overflow-hidden">
+        <thead class="table-dark text-center">
+          <tr>
+            <th>#</th>
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Position</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for worker in worker_list %}
+            <tr class="align-middle text-center">
+              <td>{{ forloop.counter }}</td>
+              <td>
+                <a href="{% url 'accounts:worker-detail' pk=worker.id %}" class="text-decoration-none fw-semibold">
+                  {{ worker.username }}
+                </a>
+              </td>
+              <td>{{ worker.first_name }} {{ worker.last_name }}</td>
+              <td>{{ worker.position }}</td>
+              <td>
+                <a href="mailto:{{ worker.email }}" class="text-decoration-none">{{ worker.email }}</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-muted">No workers found.</p>
+  {% endif %}
+</div>
+{% endblock %}

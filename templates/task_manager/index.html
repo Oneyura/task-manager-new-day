@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+  <h1 class="mb-4 text-center">📊 New Day — Dashboard</h1>
+
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-bg-primary mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Total Tasks</h5>
+          <p class="card-text fs-4">{{ count_tasks }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-success mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Completed Tasks</h5>
+          <p class="card-text fs-4">{{ count_completed_tasks }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-bg-warning mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Active Tasks</h5>
+          <p class="card-text fs-4">{{ count_active_tasks }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card text-bg-danger mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Terminated Tasks</h5>
+          <p class="card-text fs-4">{{ count_terminated_tasks }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card text-bg-secondary mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Workers</h5>
+          <p class="card-text fs-4">{{ count_workers }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <h4 class="mt-5">📈 Tasks Overview (Last 7 Days)</h4>
+<canvas id="tasksChart" height="100"></canvas>
+
+{% load static %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  window.dashboardData = {
+    labels: {{ labels_7days|safe }},
+    completedData: {{ completed_data|safe }},
+    terminatedData: {{ terminated_data|safe }},
+  };
+</script>
+
+<script src="{% static 'js/dashboard.js' %}"></script>
+
+
+
+
+{% endblock %}
+
