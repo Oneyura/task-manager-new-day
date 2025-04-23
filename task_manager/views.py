@@ -1,40 +1,41 @@
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import generic, View
+from django.views.generic import TemplateView
 
-from task_manager.forms import TaskForm, WorkerForm, WorkerFilterForm, TaskFilterForm
-from task_manager.models import Task, Worker, Tag, TaskType, Position
+from accounts.models import Position
+from task_manager.forms import TaskForm, TaskFilterForm
+from task_manager.models import Task, Tag, TaskType
 
 
 def index(request):
     now = timezone.now()
     tasks = Task.objects.all()
     count_tasks = tasks.count()
-    count_workers = Worker.objects.all().count()
+    count_workers = get_user_model().objects.all().count()
     count_completed_tasks = tasks.filter(status=True).count()
-    count_terminated_tasks = tasks.filter(
-        deadline__lt=now
-    ).count()
-    count_active_tasks = tasks.filter(
-        deadline__gt=now, status=False
-    ).count()
+    count_terminated_tasks = tasks.filter(deadline__lt=now).count()
+    count_active_tasks = tasks.filter(deadline__gt=now, status=False).count()
     count_completed_tasks_for_7days = {
-        (now - timedelta(days=day)).date(): tasks.filter(
-            end_date__date=(now - timedelta(days=day)).date(),
-            status=True
-        ).count()
+        (now - timedelta(days=day))
+        .date(): tasks.filter(
+            end_date__date=(now - timedelta(days=day)).date(), status=True
+        )
+        .count()
         for day in range(7)
     }
     count_terminated_tasks_for_7days = {
-        (now - timedelta(days=day)).date(): tasks.filter(
-            deadline__date=(now - timedelta(days=day)).date(),
-            status=False
-        ).count()
+        (now - timedelta(days=day))
+        .date(): tasks.filter(
+            deadline__date=(now - timedelta(days=day)).date(), status=False
+        )
+        .count()
         for day in range(7)
     }
     context = {
@@ -45,15 +46,22 @@ def index(request):
         "count_active_tasks": count_active_tasks,
         "count_completed_tasks_for_7days": count_completed_tasks_for_7days,
         "count_terminated_tasks_for_7days": count_terminated_tasks_for_7days,
-        "labels_7days": list(reversed([date.strftime("%Y-%m-%d") for date in count_completed_tasks_for_7days.keys()])),
-        "completed_data": list(reversed(list(count_completed_tasks_for_7days.values()))),
-        "terminated_data": list(reversed(list(count_terminated_tasks_for_7days.values()))),
+        "labels_7days": list(
+            reversed(
+                [
+                    date.strftime("%Y-%m-%d")
+                    for date in count_completed_tasks_for_7days.keys()
+                ]
+            )
+        ),
+        "completed_data": list(
+            reversed(list(count_completed_tasks_for_7days.values()))
+        ),
+        "terminated_data": list(
+            reversed(list(count_terminated_tasks_for_7days.values()))
+        ),
     }
-    return render(
-        request,
-        "task_manager/index.html",
-        context=context
-    )
+    return render(request, "task_manager/index.html", context=context)
 
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
@@ -112,9 +120,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
                 queryset = queryset.filter(priority=priority)
 
             if only_my:
-                queryset = queryset.filter(
-                    assignees=self.request.user
-                ).distinct()
+                queryset = queryset.filter(assignees=self.request.user).distinct()
 
         return queryset
 
@@ -132,7 +138,7 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
 class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Task
     form_class = TaskForm
-    success_url = reverse_lazy("task-manager:task-list") # add back to last page
+    success_url = reverse_lazy("task-manager:task-list")  # add back to last page
 
 
 class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -145,14 +151,15 @@ class TaskAssignView(LoginRequiredMixin, View):
         task = get_object_or_404(Task, pk=pk)
         task.assignees.add(request.user)
         task.save()
-        return redirect("task-manager:task-list") # add back to last page
+        return redirect("task-manager:task-list")  # add back to last page
+
 
 class TaskUnassignView(LoginRequiredMixin, View):
     def get(self, request, pk, *args, **kwargs):
         task = get_object_or_404(Task, pk=pk)
         task.assignees.remove(request.user)
         task.save()
-        return redirect("task-manager:task-list") # add back to last page
+        return redirect("task-manager:task-list")  # add back to last page
 
 
 class TaskCompleteView(LoginRequiredMixin, View):
@@ -161,80 +168,26 @@ class TaskCompleteView(LoginRequiredMixin, View):
         task.status = True
         task.end_date = timezone.now()
         task.save()
-        return redirect("task-manager:task-list") # add back to last page
+        return redirect("task-manager:task-list")  # add back to last page
+
 
 class TaskUndoView(LoginRequiredMixin, View):
     def get(self, request, pk, *args, **kwargs):
         task = get_object_or_404(Task, pk=pk)
         task.status = False
         task.save()
-        return redirect("task-manager:task-list") # add back to last page
+        return redirect("task-manager:task-list")  # add back to last page
 
 
-class WorkerListView(LoginRequiredMixin, generic.ListView):
-    model = Worker
-    context_object_name = "worker_list"
-    template_name = "task_manager/worker_list.html"
+class SettingsView(LoginRequiredMixin, TemplateView):
+    template_name = "task_manager/settings.html"
 
     def get_context_data(self, **kwargs):
-        context = super(WorkerListView, self).get_context_data(**kwargs)
-        username = self.request.GET.get("username", "")
-        position = self.request.GET.get("position", "")
-        context["filter_form"] = WorkerFilterForm(
-            initial={"username": username, "position": position}
-        )
+        context = super().get_context_data(**kwargs)
+        context["tag_list"] = Tag.objects.all()
+        context["task_type_list"] = TaskType.objects.all()
+        context["position_list"] = Position.objects.all()
         return context
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        form = WorkerFilterForm(self.request.GET)
-
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            position = form.cleaned_data["position"]
-
-            if username:
-                queryset = queryset.filter(username__icontains=username)
-
-            if position:
-                queryset = queryset.filter(position__in=position).distinct()
-
-        return queryset
-
-
-class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
-    model = Worker
-
-
-class WorkerCreateView(generic.CreateView):
-    model = Worker
-    form_class = WorkerForm
-    success_url = reverse_lazy("task-manager:worker-list")
-
-
-class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
-    model = Worker
-    form_class = WorkerForm
-    success_url = reverse_lazy("task-manager:worker-list")
-
-
-class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
-    model = Worker
-    success_url = reverse_lazy("task-manager:worker-list")
-
-
-@login_required
-def settings(request):
-    context = {
-        "tag_list": Tag.objects.all(),
-        "task_type_list": TaskType.objects.all(),
-        "position_list": Position.objects.all(),
-    }
-    return render(
-        request,
-        "task_manager/settings.html",
-        context=context
-    )
 
 
 class TagCreateView(LoginRequiredMixin, generic.CreateView):
@@ -269,29 +222,3 @@ class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
 class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = TaskType
     success_url = reverse_lazy("task-manager:settings")
-
-
-class PositionCreateView(LoginRequiredMixin, generic.CreateView):
-    model = Position
-    fields = "__all__"
-    success_url = reverse_lazy("task-manager:settings")
-
-
-class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
-    model = Position
-    fields = "__all__"
-    success_url = reverse_lazy("task-manager:settings")
-
-
-class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
-    model = Position
-    success_url = reverse_lazy("task-manager:settings")
-
-
-
-
-
-
-
-
-

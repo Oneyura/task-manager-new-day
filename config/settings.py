@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "accounts",
     'task_manager',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -102,7 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = "task_manager.Worker"
+AUTH_USER_MODEL = "accounts.Worker"
 
 LOGIN_REDIRECT_URL = "/"
 

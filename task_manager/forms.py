@@ -1,8 +1,6 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
 from django import forms
 
-from task_manager.models import Task, Tag, TaskType, Position
+from task_manager.models import Task, Tag, TaskType
 
 
 class TaskForm(forms.ModelForm):
@@ -22,18 +20,8 @@ class TaskForm(forms.ModelForm):
         }
 
 
-class WorkerForm(UserCreationForm):
-    class Meta:
-        model = get_user_model()
-        fields = UserCreationForm.Meta.fields + ("position", )
-
-
 class TaskFilterForm(forms.Form):
-    STATUS_CHOICES = (
-        ("", "all"),
-        ("true", "Completed"),
-        ("false", "Not completed")
-    )
+    STATUS_CHOICES = (("", "all"), ("true", "Completed"), ("false", "Not completed"))
 
     name = forms.CharField(
         widget=forms.TextInput(attrs={"placeholder": "Search by name"}),
@@ -61,25 +49,10 @@ class TaskFilterForm(forms.Form):
     priority = forms.ChoiceField(
         choices=[("", "All priorities")] + list(Task.Priority.choices),
         required=False,
-        label = "Priority"
+        label="Priority",
     )
     only_my = forms.BooleanField(
         required=False,
         label="Only my tasks",
-        widget=forms.CheckboxInput(attrs={"class": "form-check-input"})
-    )
-
-
-class WorkerFilterForm(forms.Form):
-    username = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "Search by username"}),
-        label="",
-        max_length=100,
-        required=False,
-    )
-    position = forms.ModelMultipleChoiceField(
-        queryset=Position.objects.all(),
-        required=False,
-        label="Position",
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
     )

@@ -8,8 +8,8 @@
 
       {% if request.user == worker %}
         <div class="d-flex gap-2">
-          <a href="{% url 'task-manager:worker-update' pk=worker.id %}" class="btn btn-sm btn-light">Update</a>
-          <a href="{% url 'task-manager:worker-delete' pk=worker.id %}" class="btn btn-sm btn-danger">Delete</a>
+          <a href="{% url 'accounts:worker-update' pk=worker.id %}" class="btn btn-sm btn-light">Update</a>
+          <a href="{% url 'accounts:worker-delete' pk=worker.id %}" class="btn btn-sm btn-danger">Delete</a>
         </div>
       {% endif %}
     </div>
