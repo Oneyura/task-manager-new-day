@@ -53,6 +53,8 @@
   <h4 class="mt-5">📈 Tasks Overview (Last 7 Days)</h4>
 <canvas id="tasksChart" height="100"></canvas>
 
+{% load static %}
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -63,7 +65,8 @@
   };
 </script>
 
-<script src="{% static 'task_manager/js/dashboard.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+
 
 
 

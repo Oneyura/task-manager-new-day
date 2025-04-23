@@ -1,4 +1,5 @@
 const ctx = document.getElementById("tasksChart").getContext("2d");
+
 const tasksChart = new Chart(ctx, {
   type: "line",
   data: {
