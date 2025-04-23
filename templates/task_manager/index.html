@@ -54,53 +54,17 @@
 <canvas id="tasksChart" height="100"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  const labels = {{ labels_7days|safe }};
-  const completedData = {{ completed_data|safe }};
-  const terminatedData = {{ terminated_data|safe }};
 
-  const ctx = document.getElementById('tasksChart').getContext('2d');
-  const tasksChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Completed Tasks',
-          data: completedData,
-          borderColor: 'green',
-          backgroundColor: 'rgba(0, 128, 0, 0.2)',
-          fill: true,
-          tension: 0.3
-        },
-        {
-          label: 'Terminated Tasks',
-          data: terminatedData,
-          borderColor: 'red',
-          backgroundColor: 'rgba(255, 0, 0, 0.2)',
-          fill: true,
-          tension: 0.3
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            stepSize: 1
-          }
-        }
-      }
-    }
-  });
+<script>
+  window.dashboardData = {
+    labels: {{ labels_7days|safe }},
+    completedData: {{ completed_data|safe }},
+    terminatedData: {{ terminated_data|safe }},
+  };
 </script>
+
+<script src="{% static 'task_manager/js/dashboard.js' %}"></script>
+
 
 
 {% endblock %}

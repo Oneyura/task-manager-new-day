@@ -10,9 +10,9 @@
     </a>
   </div>
 
-  <!-- 🔍 Пошук + фільтри -->
+  <!-- Search and filters -->
   <form method="get" class="mb-4">
-    <!-- Пошук -->
+    <!-- Search -->
     <div class="d-flex flex-wrap gap-2 mb-3">
       {{ filter_form.name }}
       <button class="btn btn-outline-primary" type="submit">Search</button>
@@ -25,7 +25,7 @@
       </button>
     </div>
 
-    <!-- Фільтри (сховані за замовчуванням) -->
+    <!-- Filters(hidden by default) -->
     <div class="collapse" id="filtersCollapse">
       <div class="card card-body shadow-sm">
         <div class="row">
@@ -57,7 +57,7 @@
     </div>
   </form>
 
-  <!-- 📝 Список завдань -->
+  <!-- Task list -->
   {% if task_list %}
     <div class="row row-cols-1 row-cols-md-2 g-4">
       {% for task in task_list %}
