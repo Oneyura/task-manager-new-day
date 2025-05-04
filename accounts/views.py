@@ -9,7 +9,7 @@ from accounts.models import Worker, Position
 class WorkerListView(LoginRequiredMixin, generic.ListView):
     model = Worker
     context_object_name = "worker_list"
-    template_name = "task_manager/worker_list.html"
+    template_name = "task_manager/../templates/accounts/worker_list.html"
 
     def get_context_data(self, **kwargs):
         context = super(WorkerListView, self).get_context_data(**kwargs)
